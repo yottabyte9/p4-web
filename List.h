@@ -136,9 +136,9 @@ public:
 
   List(): first(nullptr), last(nullptr) {}
 
-  List(const List &separate): first(separate.first), last(separate.last), size({
-    for(Node *i = sepfirst; i != nullptr; i = i->next){
-      separate.push_back(i->datum);
+  List(const List &separate): first(separate.first), last(separate.last), s(0){
+    for(Node *i = separate.first; i != nullptr; i = i->next){
+      this.push_back(i->datum);
     }
   }
 
@@ -146,8 +146,16 @@ public:
     if (this == &separate) {
       return *this;
     }
-    
+    first = separate.first;
+    last = separate.last;
+    s = 0;
+    for (Node *i = separate.first; i != nullptr; i = i->next) {
+      this.push_back(i->datum);
+    }
+  }
 
+  ~List() {
+    clear();
   }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -169,7 +177,12 @@ private:
   //void copy_all(const List<T> &other);
 
   void copy_all(const List<T> &other) {
-    assert(false);
+    first = other.first;
+    last = other.last;
+    s = 0;
+    for(Node *i = first; i != nullptr; i = i->next){
+      this.push_back(i->datum);
+    }
   }
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
@@ -197,14 +210,36 @@ public:
       return *this;
     }
 
+    Iterator& operator*() const {
+      assert(node_ptr);
+      return node_ptr->datum;
+    }
+
+    Iterator& operator++() {
+      assert(node_ptr);
+      node_ptr = node_ptr->next;
+      return *this;
+    }
+
+    Iterator(): node_ptr(nullptr){}
+
+    bool operator==(Iterator check) const {
+      return node_ptr == check.node_ptr;
+    }
+
+    bool operator!=(Iterator check) const {
+      return node_ptr != check.node_ptr;
+    }
+
   private:
     Node *node_ptr; //current Iterator position is a List node
     // add any additional necessary member variables here
 
     // add any friend declarations here
+    friend class List;
 
     // construct an Iterator at a specific position
-    Iterator(Node *p);
+    Iterator(Node *p): node_ptr(p) {}
 
   };//List::Iterator
   ////////////////////////////////////////
@@ -218,7 +253,7 @@ public:
   //Iterator end() const;
 
   Iterator end() const {
-    assert(false);
+    return Iterator();
   }
 
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
@@ -227,7 +262,9 @@ public:
   //void erase(Iterator i);
 
   void erase(Iterator i) {
-    assert(false);
+    (i.node_ptr->next)->prev = i.node_ptr->prev;
+    (i.node_ptr->prev)->next = i.node_ptr->next;
+    delete i;
   }
 
   //REQUIRES: i is a valid iterator associated with this list
@@ -235,7 +272,12 @@ public:
   //void insert(Iterator i, const T &datum);
 
   void insert(Iterator i, const T &datum) {
-    assert(false);
+    Node *newNode = new Node;
+    newNode->next = i.node_ptr->next;
+    newNode->prev = i.node_ptr->prev;
+    newNode->datum = datum;
+    (i.node_ptr->next)->prev = i.node_ptr->prev;
+    (i.node_ptr->prev)->next = i.node_ptr->next;
   }
 
 };//List
