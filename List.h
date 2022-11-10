@@ -21,7 +21,7 @@ public:
   //bool empty() const;
 
   bool empty() const {
-    return first != nullptr;
+    return first == nullptr;
   }
 
   //EFFECTS: returns the number of elements in this List
@@ -125,21 +125,21 @@ public:
 
   void clear() {
     Node *cur = first;
-    while (cur->next != nullptr) {
-      cur = cur->next;
-      delete cur->prev;
+    if (first != nullptr) {
+      while (cur->next != nullptr) {
+        cur = cur->next;
+        delete cur->prev;
+      }
+      Node *fin = last;
+      delete fin;
+      s = 0;
     }
-    Node *fin = last;
-    delete fin;
-    s = 0;
   }
 
   List(): first(nullptr), last(nullptr) {}
 
-  List(const List &separate): first(separate.first), last(separate.last), s(0){
-    for(Node *i = separate.first; i != nullptr; i = i->next){
-      this.push_back(i->datum);
-    }
+  List(const List &separate) {
+    copy_all(separate);
   }
 
   List &operator=(const List &separate) {
