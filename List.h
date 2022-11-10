@@ -18,7 +18,7 @@ class List {
 public:
 
   //EFFECTS:  returns true if the list is empty
-  bool empty() const;
+  //bool empty() const;
 
   bool empty() const {
     return first != nullptr;
@@ -27,7 +27,7 @@ public:
   //EFFECTS: returns the number of elements in this List
   //HINT:    Traversing a list is really slow.  Instead, keep track of the size
   //         with a private member variable.  That's how std::list does it.
-  int size() const;
+  //int size() const;
 
   int size() const {
     return s;
@@ -35,7 +35,7 @@ public:
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the first element in the list by reference
-  T & front();
+  //T & front();
 
   T & front() {
     return first->datum;
@@ -43,68 +43,111 @@ public:
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the last element in the list by reference
-  T & back();
+  //T & back();
 
   T & back() {
     return last->datum;
   }
 
   //EFFECTS:  inserts datum into the front of the list
-  void push_front(const T &datum);
+  //void push_front(const T &datum);
 
   void push_front(const T &datum) {
     Node *plus = new Node;
     plus->datum = datum;
-    plus->next = first;
-    first->prev = plus;
-    first = plus;
-    plus->prev = 0;
-    s++;
+    if (empty()) {
+      plus->prev = nullptr;
+      plus->next = nullptr;
+      first = plus;
+      last = plus;
+      s++;
+    }
+    else {
+      plus->next = first;
+      first->prev = plus;
+      first = plus;
+      plus->prev = nullptr;
+      s++;
+    }
   }
 
   //EFFECTS:  inserts datum into the back of the list
-  void push_back(const T &datum);
+  //void push_back(const T &datum);
 
   void push_back(const T &datum) {
     Node *backPlus = new Node;
     backPlus->datum = datum;
-    backPlus->next = 0;
-    backPlus->prev = last;
-    last->next = backPlus;
-    last = backPlus;
-    s++;
+    if (empty()) {
+      backPlus->prev = nullptr;
+      backPlus->next = nullptr;
+      first = backPlus;
+      last = backPlus;
+      s++;
+    }
+    else {
+      backPlus->next = nullptr;
+      backPlus->prev = last;
+      last->next = backPlus;
+      last = backPlus;
+      s++;
+    }
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
-  void pop_front();
+  //void pop_front();
 
   void pop_front() {
+    Node *fir = first;
     first = first->next;
-    delete first->prev; 
-    first->prev = 0;
+    first->prev = nullptr;
+    delete fir;
     s--;
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the back of the list
-  void pop_back();
+  //void pop_back();
 
   void pop_back() {
+    Node *fin = last;
     last = last->prev;
-    delete last->next;
-    last->next = 0;
+    last->next = nullptr;
+    delete fin;
     s--;
   }
 
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes all items from the list
-  void clear();
+  //void clear();
 
   void clear() {
-    assert(false);
+    Node *cur = first;
+    while (cur->next != nullptr) {
+      cur = cur->next;
+      delete cur->prev;
+    }
+    Node *fin = last;
+    delete fin;
+    s = 0;
+  }
+
+  List(): first(nullptr), last(nullptr) {}
+
+  List(const List &separate): first(separate.first), last(separate.last), size({
+    for(Node *i = sepfirst; i != nullptr; i = i->next){
+      separate.push_back(i->datum);
+    }
+  }
+
+  List &operator=(const List &separate) {
+    if (this == &separate) {
+      return *this;
+    }
+    
+
   }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -123,7 +166,7 @@ private:
 
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
-  void copy_all(const List<T> &other);
+  //void copy_all(const List<T> &other);
 
   void copy_all(const List<T> &other) {
     assert(false);
@@ -172,7 +215,7 @@ public:
   }
 
   // return an Iterator pointing to "past the end"
-  Iterator end() const;
+  //Iterator end() const;
 
   Iterator end() const {
     assert(false);
@@ -181,7 +224,7 @@ public:
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container
-  void erase(Iterator i);
+  //void erase(Iterator i);
 
   void erase(Iterator i) {
     assert(false);
@@ -189,7 +232,7 @@ public:
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
-  void insert(Iterator i, const T &datum);
+  //void insert(Iterator i, const T &datum);
 
   void insert(Iterator i, const T &datum) {
     assert(false);
