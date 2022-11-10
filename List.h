@@ -262,22 +262,32 @@ public:
   //void erase(Iterator i);
 
   void erase(Iterator i) {
-    (i.node_ptr->next)->prev = i.node_ptr->prev;
-    (i.node_ptr->prev)->next = i.node_ptr->next;
-    delete i;
+    if(!i.node.ptr->next && !i.node.ptr->prev){ //next and prev node is there
+      (i.node_ptr->next)->prev = i.node_ptr->prev; //repoint next node's previous arrow
+      (i.node_ptr->prev)->next = i.node_ptr->next; //repoint prev node's next arrow
+    }
+    else if(!i.node.ptr->next){ //no prev node but next is there
+      (i.node_ptr->next)->prev = nullptr;
+    }
+    else if(!i.node.ptr->prev){ //no next node but prev is there
+      (i.node_ptr->prev)->next = nullptr;
+    }
+    delete i.node_ptr;
+    s--;
   }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
   //void insert(Iterator i, const T &datum);
 
-  void insert(Iterator i, const T &datum) {
+  void insert(Iterator i, const T &datum) { //use pop front/back push front/back for edge cases (size check)
     Node *newNode = new Node;
     newNode->next = i.node_ptr->next;
     newNode->prev = i.node_ptr->prev;
     newNode->datum = datum;
     (i.node_ptr->next)->prev = i.node_ptr->prev;
     (i.node_ptr->prev)->next = i.node_ptr->next;
+    s++;
   }
 
 };//List
