@@ -53,7 +53,7 @@ public:
   //void push_front(const T &datum);
 
   void push_front(const T &datum) {
-    Node *plus = new Node();
+    Node *plus = new Node;
     plus->datum = datum;
     if (empty()) {
       plus->prev = nullptr;
@@ -62,25 +62,41 @@ public:
       last = plus;
       s++;
     }
+    else if (s == 1) {
+      plus->next = first;
+      first->prev = plus;
+      last = first;
+      first = plus;
+      plus->prev = nullptr;
+      s++;
+    }
     else {
       plus->next = first;
       first->prev = plus;
       first = plus;
       plus->prev = nullptr;
       s++;
-    }
+    } 
   }
 
   //EFFECTS:  inserts datum into the back of the list
   //void push_back(const T &datum);
 
   void push_back(const T &datum) {
-    Node *backPlus = new Node();
+    Node *backPlus = new Node;
     backPlus->datum = datum;
     if (empty()) {
       backPlus->prev = nullptr;
       backPlus->next = nullptr;
       first = backPlus;
+      last = backPlus;
+      s++;
+    }
+    else if (s == 1) {
+      backPlus->next = nullptr;
+      backPlus->prev = last;
+      last->next = backPlus;
+      first = last;
       last = backPlus;
       s++;
     }
@@ -99,7 +115,7 @@ public:
   //void pop_front();
 
   void pop_front() {
-    //assert(!empty());
+    assert(!empty());
     if (s == 1) {
       Node *fir = first;
       delete fir;
@@ -107,10 +123,18 @@ public:
       last = nullptr;
       s--;
     }
+    else if (s == 2) {
+      Node *fir = first;
+      first = first->next;
+      first->prev = nullptr;
+      last = first;
+      delete fir;
+      s--;
+    }
     else {
       Node *fir = first;
       first = first->next;
-      first->next->prev = nullptr;
+      first->prev = nullptr;
       delete fir;
       s--;
     }
@@ -126,6 +150,14 @@ public:
       Node *fin = last;
       first = nullptr;
       last = nullptr;
+      delete fin;
+      s--;
+    }
+    else if (s == 2) {
+      Node *fin = last;
+      last = last->prev;
+      last->next = nullptr;
+      first = last;
       delete fin;
       s--;
     }
@@ -187,19 +219,14 @@ private:
   //void copy_all(const List<T> &other);
 
   void copy_all(const List<T> &other) {
-    first = other.first;
-    last = other.last;
-    s = other.s;
-    int a = 0;
-      for(Node *i = other.first; i != nullptr && a < other.s; i = i->next){
+      for(Node *i = other.first; i != nullptr; i = i->next){
           this->push_back(i->datum);
-          a++;
-        }
+      }
   }
 
-  Node *first = nullptr;   // points to first Node in list, or nullptr if list is empty
-  Node *last = nullptr;    // points to last Node in list, or nullptr if list is empty
-  int s = 0;
+  Node *first;   // points to first Node in list, or nullptr if list is empty
+  Node *last;    // points to last Node in list, or nullptr if list is empty
+  int s;
 
 public:
   ////////////////////////////////////////
@@ -223,7 +250,7 @@ public:
       return *this;
     }
 
-    Iterator& operator*() const {
+    T& operator*() const {
       assert(node_ptr);
       return node_ptr->datum;
     }
