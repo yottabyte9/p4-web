@@ -47,6 +47,10 @@ TEST(test_clear_big_three) {
     current1.push_back(3);
     current1.push_front(5); 
     current1.push_front(16);
+
+    List<int>::Iterator i = current1.begin();
+    i++;
+
     current1.push_back(7);
     current1.push_front(56);
     current1.push_front(0);
@@ -61,5 +65,7 @@ TEST(test_clear_big_three) {
     ASSERT_TRUE(current4.size() == 1);
     ASSERT_FALSE(current4.empty());
 }
+
+
 
 TEST_MAIN()
