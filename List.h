@@ -62,21 +62,13 @@ public:
       last = plus;
       s++;
     }
-    else if (s == 1) {
-      plus->next = first;
-      first->prev = plus;
-      last = first;
-      first = plus;
-      plus->prev = nullptr;
-      s++;
-    }
     else {
       plus->next = first;
       first->prev = plus;
       first = plus;
       plus->prev = nullptr;
       s++;
-    } 
+    }
   }
 
   //EFFECTS:  inserts datum into the back of the list
@@ -89,14 +81,6 @@ public:
       backPlus->prev = nullptr;
       backPlus->next = nullptr;
       first = backPlus;
-      last = backPlus;
-      s++;
-    }
-    else if (s == 1) {
-      backPlus->next = nullptr;
-      backPlus->prev = last;
-      last->next = backPlus;
-      first = last;
       last = backPlus;
       s++;
     }
@@ -115,26 +99,17 @@ public:
   //void pop_front();
 
   void pop_front() {
-    assert(!empty());
     if (s == 1) {
       Node *fir = first;
-      delete fir;
       first = nullptr;
       last = nullptr;
-      s--;
-    }
-    else if (s == 2) {
-      Node *fir = first;
-      first = first->next;
-      first->prev = nullptr;
-      last = first;
       delete fir;
       s--;
     }
     else {
       Node *fir = first;
       first = first->next;
-      first->prev = nullptr;
+      first->next->prev = nullptr;
       delete fir;
       s--;
     }
@@ -153,14 +128,6 @@ public:
       delete fin;
       s--;
     }
-    else if (s == 2) {
-      Node *fin = last;
-      last = last->prev;
-      last->next = nullptr;
-      first = last;
-      delete fin;
-      s--;
-    }
     else {
       Node *fin = last;
       last = last->prev;
@@ -175,16 +142,23 @@ public:
   //void clear();
 
   void clear() {
-    while(s != 0) {
-      pop_front();
+    assert !empty();
+    Node *cur = first;
+    if (first != nullptr) {
+      while (cur->next != nullptr) {
+        cur = cur->next;
+        delete cur->prev;
+      }
+      Node *fin = last;
+      delete fin;
+      s = 0;
     }
-    first = nullptr;
-    last = nullptr;
   }
 
-  List(): first(nullptr), last(nullptr), s(0) {}
+  List(): first(nullptr), last(nullptr) {}
 
-  List(const List &separate): first(nullptr), last(nullptr), s(0) {
+  List(const List &separate) {
+
     copy_all(separate);
   }
 
@@ -194,7 +168,6 @@ public:
     }
     clear();
     copy_all(separate);
-    return *this;
   }
 
   ~List() {
@@ -213,20 +186,23 @@ private:
     Node *prev;
     T datum;
   };
+  int s = 0;
 
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
   //void copy_all(const List<T> &other);
 
   void copy_all(const List<T> &other) {
-      for(Node *i = other.first; i != nullptr; i = i->next){
-          this->push_back(i->datum);
-      }
+    first = other.first;
+    last = other.last;
+    s = 0;
+    for(Node *i = first; i != nullptr; i = i->next){
+      this.push_back(i->datum);
+    }
   }
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
-  int s;
 
 public:
   ////////////////////////////////////////
@@ -250,7 +226,7 @@ public:
       return *this;
     }
 
-    T& operator*() const {
+    Iterator& operator*() const {
       assert(node_ptr);
       return node_ptr->datum;
     }
@@ -296,7 +272,7 @@ public:
     return Iterator();
   }
 
-   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
+  //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container
   //void erase(Iterator i);
@@ -305,29 +281,37 @@ public:
     if(!i.node.ptr->next && !i.node.ptr->prev){ //next and prev node is there
       (i.node_ptr->next)->prev = i.node_ptr->prev; //repoint next node's previous arrow
       (i.node_ptr->prev)->next = i.node_ptr->next; //repoint prev node's next arrow
+      delete i.node_ptr;
+      s--;
     }
     else if(!i.node.ptr->next){ //no prev node but next is there
-      (i.node_ptr->next)->prev = nullptr;
+      pop_front();
     }
     else if(!i.node.ptr->prev){ //no next node but prev is there
-      (i.node_ptr->prev)->next = nullptr;
+      pop_back();
     }
-    delete i.node_ptr;
-    s--;
   }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
   //void insert(Iterator i, const T &datum);
 
-  void insert(Iterator i, const T &datum) { //use pop front/back push front/back for edge cases (size check)
-    Node *newNode = new Node;
-    newNode->next = i.node_ptr->next;
-    newNode->prev = i.node_ptr->prev;
-    newNode->datum = datum;
-    (i.node_ptr->next)->prev = i.node_ptr->prev;
-    (i.node_ptr->prev)->next = i.node_ptr->next;
-    s++;
+  void insert(Iterator i, const T &datum) { 
+    if(!i.node_ptr){//insert front
+      push_front(datum);
+    }
+    else if(!i.node_ptr->next){//insert back
+      push_back(datum);
+    }
+    else{
+      Node *newNode = new Node;
+      newNode->datum = datum;
+      newNode->next = i.node_ptr;
+      newNode->prev = i.node_ptr->prev;
+      i.node_ptr->prev = newNode; 
+      i.node_ptr->prev->next = newNode;
+      s++;
+    }
   }
 
 };//List
