@@ -142,6 +142,7 @@ public:
   //void clear();
 
   void clear() {
+    assert !empty();
     Node *cur = first;
     if (first != nullptr) {
       while (cur->next != nullptr) {
@@ -281,10 +282,10 @@ public:
       (i.node_ptr->prev)->next = i.node_ptr->next; //repoint prev node's next arrow
     }
     else if(!i.node.ptr->next){ //no prev node but next is there
-      (i.node_ptr->next)->prev = nullptr;
+      pop_front();
     }
     else if(!i.node.ptr->prev){ //no next node but prev is there
-      (i.node_ptr->prev)->next = nullptr;
+      pop_back();
     }
     delete i.node_ptr;
     s--;
@@ -294,14 +295,22 @@ public:
   //EFFECTS: inserts datum before the element at the specified position.
   //void insert(Iterator i, const T &datum);
 
-  void insert(Iterator i, const T &datum) { //use pop front/back push front/back for edge cases (size check)
+  void insert(Iterator i, const T &datum) { 
     Node *newNode = new Node;
     newNode->next = i.node_ptr->next;
     newNode->prev = i.node_ptr->prev;
     newNode->datum = datum;
-    (i.node_ptr->next)->prev = i.node_ptr->prev;
-    (i.node_ptr->prev)->next = i.node_ptr->next;
-    s++;
+    if(!i.node_ptr){//insert front
+      push_front(datum);
+    }
+    else if(!i.node_ptr->next){//insert back
+      push_back(datum);
+    }
+    else{
+      (i.node_ptr->next)->prev = i.node_ptr->prev;
+      (i.node_ptr->prev)->next = i.node_ptr->next;
+      s++;
+    }
   }
 
 };//List
