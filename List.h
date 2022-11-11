@@ -99,11 +99,20 @@ public:
   //void pop_front();
 
   void pop_front() {
-    Node *fir = first;
-    first = first->next;
-    first->prev = nullptr;
-    delete fir;
-    s--;
+    if (s == 1) {
+      Node *fir = first;
+      first = nullptr;
+      last = nullptr;
+      delete fir;
+      s--;
+    }
+    else {
+      Node *fir = first;
+      first = first->next;
+      first->prev = nullptr;
+      delete fir;
+      s--;
+    }
   }
 
   //REQUIRES: list is not empty
@@ -112,11 +121,20 @@ public:
   //void pop_back();
 
   void pop_back() {
-    Node *fin = last;
-    last = last->prev;
-    last->next = nullptr;
-    delete fin;
-    s--;
+    if (s == 1) {
+      Node *fin = last;
+      first = nullptr;
+      last = nullptr;
+      delete fin;
+      s--;
+    }
+    else {
+      Node *fin = last;
+      last = last->prev;
+      last->next = nullptr;
+      delete fin;
+      s--;
+    }
   }
 
   //MODIFIES: may invalidate list iterators
@@ -146,12 +164,8 @@ public:
     if (this == &separate) {
       return *this;
     }
-    first = separate.first;
-    last = separate.last;
-    s = 0;
-    for (Node *i = separate.first; i != nullptr; i = i->next) {
-      this.push_back(i->datum);
-    }
+    clear();
+    copy_all(separate);
   }
 
   ~List() {
