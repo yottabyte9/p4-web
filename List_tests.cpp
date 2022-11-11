@@ -66,5 +66,26 @@ TEST(test_clear_big_three) {
     ASSERT_TRUE(current4.empty()); */
 }
 
+TEST(test_push_pop_low_nodes){
+    List<int> low;
+    low.push_front(3);
+    low.pop_front();
+    assert(low.empty());
+    
+    low.push_back(4);
+    low.pop_back();
+    assert(low.empty());
+    
+    low.push_front(5);
+    low.push_front(5);
+    low.pop_front();
+    low.push_front(6);
+    low.pop_back();
+    low.push_back(6);
+    assert(low.size()==2);
+    assert(low.back() == 6);
+    assert(low.front() == 6);
+}
+
 TEST_MAIN()
 
