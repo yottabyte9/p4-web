@@ -197,9 +197,9 @@ private:
         }
   }
 
-  Node *first;   // points to first Node in list, or nullptr if list is empty
-  Node *last;    // points to last Node in list, or nullptr if list is empty
-  int s;
+  Node *first = nullptr;   // points to first Node in list, or nullptr if list is empty
+  Node *last = nullptr;    // points to last Node in list, or nullptr if list is empty
+  int s = 0;
 
 public:
   ////////////////////////////////////////
