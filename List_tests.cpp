@@ -123,20 +123,25 @@ TEST(test_iterator_erase_insert){
     current2.push_back(5);
     i = current2.begin();
     ASSERT_EQUAL(5, *i);
-    ++i; 
-    ASSERT_TRUE(i==current2.end());
-    ASSERT_FALSE(i!=current2.begin());
-    --i; 
-    ASSERT_EQUAL(5, *i);
     current2.erase(i); 
     ASSERT_TRUE(current2.empty());
+    i = current2.begin();
     current2.insert(i,4);
     ASSERT_TRUE(current2.front() == 4);
     ASSERT_TRUE(current2.back() == 4);
     current2.insert(i,3);
     ASSERT_TRUE(current2.back() == 3);
-    current2.erase(--i);
-    ASSERT_TRUE(current2.back() == 4);  
+
+    List<int> current3;
+    current3.push_back(1);
+    current3.push_back(2);
+    current3.push_back(3);
+    current3.push_back(4);
+    i = current3.begin();
+    ++i;
+    ++i;
+    --i;
+    ASSERT_EQUAL(2, *i);
 }
 
 TEST_MAIN()
