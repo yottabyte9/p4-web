@@ -144,4 +144,36 @@ TEST(test_iterator_erase_insert){
     ASSERT_EQUAL(2, *i);
 }
 
+TEST(test_for_loop){
+    List<int> lf;
+    for(int i=0; i<10; i++){
+        lf.push_back(i);
+    }
+    List<int>::Iterator j = lf.begin();
+    ++j;
+    ++j;
+    lf.erase(j);
+    for(int i=0; i<9; i++){
+        List<int>::Iterator j = lf.begin();
+        lf.erase(j);
+    }
+    ASSERT_TRUE(lf.empty());
+
+    List<int> lf2;
+    for(int i=0; i<10; i++){
+        List<int>::Iterator j = lf2.end();
+        lf2.insert(j,i);
+    }
+    int counter = 0;
+    for(List<int>::Iterator i = lf2.begin(); i!=lf2.end(); ++i){
+        ASSERT_EQUAL(*i, counter);
+        counter ++;
+    }
+    for(int i=0; i<10; i++){
+        List<int>::Iterator j = lf2.begin();
+        lf2.erase(j);
+    }
+    ASSERT_TRUE(lf2.empty());
+}
+
 TEST_MAIN()
