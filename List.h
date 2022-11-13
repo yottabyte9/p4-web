@@ -175,7 +175,7 @@ public:
   //void clear();
 
   void clear() {
-    while(s != 0) {
+    while(!empty()) {
       pop_front();
     }
     first = nullptr;
@@ -301,17 +301,16 @@ public:
   //EFFECTS: Removes a single element from the list container
   //void erase(Iterator i);
 
- //REQUIRES: i is a valid, dereferenceable iterator associated with this list
-  //MODIFIES: may invalidate other list iterators
-  //EFFECTS: Removes a single element from the list container
-  //void erase(Iterator i);
 
   void erase(Iterator i) {
-    if(i.node_ptr != nullptr){ //if last one
-      pop_back();
+    if (s == 0) {
+      return;
     }
-    else if(i.node_ptr != nullptr){ //if first one
+    else if(i.node_ptr == first){ //if first one
       pop_front();
+    }
+    else if(i.node_ptr == last){ //if last one
+      pop_back();
     }
     else {
       (i.node_ptr->next)->prev = i.node_ptr->prev; //repoint next node's previous arrow
@@ -329,7 +328,7 @@ public:
     if(i.node_ptr==first){//insert front
       push_front(datum);
     }
-    else if(!i.node_ptr){//insert back
+    else if(i.node_ptr == nullptr){//insert back
       push_back(datum);
     }
     else{
@@ -338,7 +337,7 @@ public:
       newNode->next = i.node_ptr;
       newNode->prev = i.node_ptr->prev;
       i.node_ptr->prev = newNode; 
-      i.node_ptr->prev->next = newNode;
+      (newNode->prev)->next = newNode;
       s++;
     }
   }
