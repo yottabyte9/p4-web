@@ -42,15 +42,11 @@ TEST(test_push_pop) {
     ASSERT_TRUE(current.size() == 0);
 } 
 
-TEST(test_clear_big_three) {
+TEST(test_big_three) {
     List<int> current1;
     current1.push_back(3);
     current1.push_front(5); 
     current1.push_front(16);
-
-    List<int>::Iterator i = current1.begin();
-    i++;
-
     current1.push_back(7);
     current1.push_front(56);
     current1.push_front(0);
@@ -66,6 +62,81 @@ TEST(test_clear_big_three) {
     ASSERT_FALSE(current4.empty());
 }
 
+TEST(push_pop_all) {
+    List<double> current5;
+    current5.push_front(5.8);
+    current5.push_front(5.9);
+    current5.push_front(11.3);
+    ASSERT_TRUE(current5.front() == 11.3);
+    current5.pop_front();
+    ASSERT_TRUE(current5.front() == 5.9);
+    current5.pop_front();
+    ASSERT_TRUE(current5.front() == 5.8);
+    current5.pop_front();
+    ASSERT_TRUE(current5.size() == 0);
+    current5.push_back(6.8);
+    current5.push_back(6.9);
+    current5.push_back(12.3);
+    ASSERT_TRUE(current5.back() == 12.3);
+    current5.pop_back();
+    ASSERT_TRUE(current5.back() == 6.9);
+    current5.pop_back();
+    ASSERT_TRUE(current5.back() == 6.8);
+    current5.pop_back();
+    ASSERT_TRUE(current5.size() == 0);
+}
 
+TEST(test_no_elements){
+    List<int> current1;
+    current1.push_back(3);
+    current1.pop_back();
+    ASSERT_TRUE(current1.empty());
+    current1.push_front(4);
+    current1.pop_front();
+    ASSERT_TRUE(current1.empty());
+    List<int>::Iterator i = current1.begin();
+    ASSERT_FALSE(*i);
+    ASSERT_EQUAL(current1.begin(), current1.end());
+}
+
+TEST(test_iterator_erase_insert){
+    List<int> current1;
+    current1.push_back(1);
+    current1.push_back(2);
+    current1.push_back(3);
+    List<int>::Iterator i = current1.end(); //inserting and erasing into end
+    current1.insert(i, 4);
+    ASSERT_EQUAL(current1.back(), 4);
+    i = current1.begin();
+    ++i;
+    ++i;
+    ++i;
+    current1.erase(i);
+    ASSERT_EQUAL(current1.back(), 3);
+    i = current1.begin(); //inserting and erasing into front
+    current1.insert(i, 9); 
+    ASSERT_EQUAL(current1.front(), 9); 
+    current1.erase(i);
+    ASSERT_EQUAL(current1.front(), 9); 
+
+    List<int> current2; //when there's only 1 element
+    current2.push_back(5);
+    i = current2.begin();
+    ASSERT_EQUAL(5, *i);
+    ++i; 
+    ASSERT_TRUE(i==current2.end());
+    ASSERT_FALSE(i!=current2.begin());
+    --i; 
+    ASSERT_EQUAL(5, *i);
+    current2.erase(i); 
+    ASSERT_TRUE(current2.empty());
+    current2.insert(i,4);
+    ASSERT_TRUE(current2.front() == 4);
+    ASSERT_TRUE(current2.back() == 4);
+    current2.insert(i,3);
+    ASSERT_TRUE(current2.back() == 3);
+    current2.erase(--i);
+    ASSERT_TRUE(current2.back() == 4);  
+}
 
 TEST_MAIN()
