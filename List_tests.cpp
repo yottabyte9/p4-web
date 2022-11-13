@@ -95,7 +95,7 @@ TEST(test_no_elements){
     current1.pop_front();
     ASSERT_TRUE(current1.empty());
     List<int>::Iterator i = current1.begin();
-    ASSERT_FALSE(*i);
+    ASSERT_EQUAL(i, current1.end());
     ASSERT_EQUAL(current1.begin(), current1.end());
 }
 
@@ -105,6 +105,7 @@ TEST(test_iterator_erase_insert){
     current1.push_back(2);
     current1.push_back(3);
     List<int>::Iterator i = current1.end(); //inserting and erasing into end
+    ASSERT_EQUAL(List<int>::Iterator(), i);
     current1.insert(i, 4);
     ASSERT_EQUAL(current1.back(), 4);
     i = current1.begin();
@@ -114,7 +115,7 @@ TEST(test_iterator_erase_insert){
     current1.erase(i);
     ASSERT_EQUAL(current1.back(), 3);
     i = current1.begin(); //inserting and erasing into front
-    current1.insert(i, 9); 
+    current1.insert(i, 9); //here
     ASSERT_EQUAL(current1.front(), 9); 
     current1.erase(i);
     ASSERT_EQUAL(current1.front(), 9); 
@@ -162,7 +163,7 @@ TEST(test_for_loop){
     List<int> lf2;
     for(int i=0; i<10; i++){
         List<int>::Iterator j = lf2.end();
-        lf2.insert(j,i);
+        lf2.insert(j,i); // here
     }
     int counter = 0;
     for(List<int>::Iterator i = lf2.begin(); i!=lf2.end(); ++i){
@@ -176,4 +177,68 @@ TEST(test_for_loop){
     ASSERT_TRUE(lf2.empty());
 }
 
+TEST(insert_erase_all) {
+    List<int> current7;
+    List<int>::Iterator i = current7.begin();
+    current7.insert(i, 7);
+    ASSERT_TRUE(current7.front() == 7); 
+    i = current7.begin();
+    current7.insert(i, 3); //here
+    ASSERT_TRUE(current7.front() == 3);
+    ++i;
+    ASSERT_TRUE(i == current7.end());
+    ASSERT_FALSE(i != current7.end());
+    current7.insert(i, 4);
+    current7.insert(i, 14); //here
+    ASSERT_TRUE(i == current7.end()); 
+    i = current7.begin();
+    ASSERT_TRUE(*i == 3);
+    ++i;
+    ASSERT_TRUE(*i == 7);
+    ++i;
+    ASSERT_TRUE(*i == 4);
+    ++i;
+    ASSERT_TRUE(*i == 14);
+    ++i;
+    i = current7.end();
+    current7.insert(i, 8); 
+    i = current7.begin();
+    current7.insert(i, 34); 
+    ++i;
+    ASSERT_TRUE(current7.front() == 34);
+    ASSERT_TRUE(current7.back() == 8);
+    i = current7.begin();
+    ++i;
+    ++i;
+    current7.insert(i, 5);
+    --i;
+    ASSERT_TRUE(*i == 5);
+    current7.erase(i);
+    ASSERT_TRUE(current7.front() == 34); 
+    i = current7.begin();
+    ++i;
+    current7.erase(i);
+    ASSERT_TRUE(current7.front() == 34);
+    current7.erase(current7.begin());
+    ASSERT_TRUE(current7.front() == 7);
+    i = current7.begin();
+    ++i;
+    ++i;
+    ++i;
+    current7.erase(i);
+    ASSERT_TRUE(current7.back() == 14); 
+    i = current7.begin();
+    ++i;
+    current7.erase(i);
+    i = current7.begin();
+    ASSERT_TRUE(current7.front() == 7);
+    ASSERT_TRUE(current7.back() == 14);
+    ++i;
+    current7.erase(i);
+    i = current7.begin();
+    current7.erase(i);
+    ASSERT_TRUE(current7.empty());
+    i = current7.begin();
+    current7.erase(i);
+}
 TEST_MAIN()
