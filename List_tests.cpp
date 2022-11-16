@@ -54,12 +54,24 @@ TEST(test_big_three) {
     List<int> current2(current1);
     List<int> current3;
     current3 = current1;
+    List<int> current4;
+    current4.push_back(1);
+    current4 = current1;
+    ASSERT_TRUE(current4.front() == 0);
+    ASSERT_TRUE(current4.back() == -4);
+    List<int>::Iterator k = current1.begin();
+    List<int>::Iterator z = current4.begin();
+    ASSERT_FALSE(k==z);
+    List<int> current8;
+    List<int> current9(current8);
+    ASSERT_TRUE(current8.empty());
+    ASSERT_TRUE(current9.empty());
     ASSERT_TRUE(current2.front() == 0);
     ASSERT_TRUE(current3.back() == -4);
-    List<bool> current4;
-    current4.push_front(true);
-    ASSERT_TRUE(current4.size() == 1);
-    ASSERT_FALSE(current4.empty());
+    List<bool> current10;
+    current10.push_front(true);
+    ASSERT_TRUE(current10.size() == 1);
+    ASSERT_FALSE(current10.empty());
 }
 
 TEST(push_pop_all) {
@@ -104,23 +116,30 @@ TEST(test_iterator_erase_insert){
     current1.push_back(1);
     current1.push_back(2);
     current1.push_back(3);
-    List<int>::Iterator i = current1.end(); //inserting and erasing into end
+    List<int>::Iterator i = current1.end(); 
     ASSERT_EQUAL(List<int>::Iterator(), i);
     current1.insert(i, 4);
     ASSERT_EQUAL(current1.back(), 4);
     i = current1.begin();
     ++i;
+    current1.insert(i, 6);
+    --i;
+    ASSERT_TRUE(*i == 6);
+    current1.erase(i);
+    i = current1.begin();
+    ASSERT_TRUE(current1.size() == 4);
+    ++i;
     ++i;
     ++i;
     current1.erase(i);
     ASSERT_EQUAL(current1.back(), 3);
-    i = current1.begin(); //inserting and erasing into front
+    i = current1.begin(); 
     current1.insert(i, 9); //here
     ASSERT_EQUAL(current1.front(), 9); 
     current1.erase(i);
     ASSERT_EQUAL(current1.front(), 9); 
 
-    List<int> current2; //when there's only 1 element
+    List<int> current2; 
     current2.push_back(5);
     i = current2.begin();
     ASSERT_EQUAL(5, *i);
@@ -185,58 +204,57 @@ TEST(insert_erase_all) {
     i = current7.begin();
     current7.insert(i, 3); //here
     ASSERT_TRUE(current7.front() == 3); 
-    ++i;
+    i = current7.end();
     ASSERT_TRUE(i == current7.end()); 
-    // ASSERT_FALSE(i != current7.end()); 
-    // current7.insert(i, 4);
-    // current7.insert(i, 14); //here
-    // ASSERT_TRUE(i == current7.end()); 
-    // i = current7.begin();
-    // ASSERT_TRUE(*i == 3);
-    // ++i;
-    // ASSERT_TRUE(*i == 7);
-    // ++i;
-    // ASSERT_TRUE(*i == 4);
-    // ++i;
-    // ASSERT_TRUE(*i == 14);
-    // ++i;
-    // i = current7.end();
-    // current7.insert(i, 8); 
-    // i = current7.begin();
-    // current7.insert(i, 34); 
-    // ++i;
-    // ASSERT_TRUE(current7.front() == 34); 
-    // ASSERT_TRUE(current7.back() == 8);
-    // i = current7.begin();
-    // ++i;
-    // ++i;
-    // current7.insert(i, 5); // {7}
-    // --i;
-    // ASSERT_TRUE(*i == 5);
-    // current7.erase(i);
-    // ASSERT_TRUE(current7.front() == 34); 
-    // i = current7.begin();
-    // ++i;
-    // current7.erase(i);
-    // ASSERT_TRUE(current7.front() == 34);
-    // current7.erase(current7.begin());
-    // ASSERT_TRUE(current7.front() == 7);
-    // i = current7.begin();
-    // ++i;
-    // ++i;
-    // ++i;
-    // current7.erase(i);
-    // ASSERT_TRUE(current7.back() == 14); 
-    // i = current7.begin();
-    // ++i;
-    // current7.erase(i);
-    // i = current7.begin();
-    // ASSERT_TRUE(current7.front() == 7);
-    // ASSERT_TRUE(current7.back() == 14);
-    // ++i;
-    // current7.erase(i);
-    // i = current7.begin();
-    // current7.erase(i);
-    // ASSERT_TRUE(current7.empty());
+    current7.insert(i, 4);
+    current7.insert(i, 14); //here
+    ASSERT_TRUE(i == current7.end()); 
+    i = current7.begin();
+    ASSERT_TRUE(*i == 3);
+    ++i;
+    ASSERT_TRUE(*i == 7);
+    ++i;
+    ASSERT_TRUE(*i == 4);
+    ++i;
+    ASSERT_TRUE(*i == 14);
+    i = current7.end();
+    current7.insert(i, 8); 
+    i = current7.begin();
+    current7.insert(i, 34); 
+    ++i;
+    ASSERT_TRUE(current7.front() == 34); 
+    ASSERT_TRUE(current7.back() == 8);
+    i = current7.begin();
+    ++i;
+    ++i;
+    current7.insert(i, 5); 
+    --i;
+    ASSERT_TRUE(*i == 5);
+    current7.erase(i);
+    ASSERT_TRUE(current7.front() == 34); 
+    i = current7.begin();
+    ++i;
+    ASSERT_TRUE(*i==3);
+    current7.erase(i);
+    ASSERT_TRUE(current7.front() == 34);
+    current7.erase(current7.begin());
+    ASSERT_TRUE(current7.front() == 7);
+    i = current7.begin();
+    ++i;
+    ++i;
+    ++i;
+    current7.erase(i);
+    ASSERT_TRUE(current7.back() == 14); 
+    i = current7.begin();
+    ++i;
+    current7.erase(i);
+    i = current7.begin();
+    ASSERT_TRUE(current7.front() == 7);
+    ASSERT_TRUE(current7.back() == 14);
+    ++i;
+    current7.erase(i);
+    i = current7.begin();
+    current7.erase(i);
+    ASSERT_TRUE(current7.empty());
 }
 TEST_MAIN()
